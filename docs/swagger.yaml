@@ -1,0 +1,127 @@
+definitions:
+  http.AuthzRequest:
+    properties:
+      message:
+        type: string
+      signature:
+        description: base64
+        type: string
+      username:
+        type: string
+    type: object
+  http.AuthzResponse:
+    properties:
+      authorized:
+        type: boolean
+      reason:
+        type: string
+    type: object
+  http.LoginRequest:
+    properties:
+      passphrase:
+        type: string
+      username:
+        type: string
+    type: object
+  http.LoginResponse:
+    properties:
+      encryptedPrivateKeyPEM:
+        type: string
+      publicKeyPEM:
+        type: string
+    type: object
+  http.RegisterRequest:
+    properties:
+      passphrase:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /authz:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет подпись сообщения приватным ключом пользователя
+      parameters:
+      - description: Данные для авторизации
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.AuthzRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.AuthzResponse'
+        "400":
+          description: invalid request
+          schema:
+            type: string
+      summary: Авторизация по подписи
+      tags:
+      - auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Логин по username и passphrase
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.LoginResponse'
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+      summary: Аутентификация пользователя
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует нового пользователя
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/http.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: invalid request
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      summary: Регистрация пользователя
+      tags:
+      - auth
+swagger: "2.0"

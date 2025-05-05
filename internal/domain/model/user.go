@@ -1,7 +1,7 @@
 package model
 
 type User struct {
-	Username       string
-	PublicKeyPEM   string
-	PassphraseHash []byte
+	Username            string
+	PublicKeyPEM        string
+	EncryptedPrivKeyPEM string
 }
